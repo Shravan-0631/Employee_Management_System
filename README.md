@@ -204,19 +204,3 @@ Base URL: `http://127.0.0.1:5000`
 | **5** | **Search With No Results** | `GET /api/employees/search?q=NonExistentQuery` | **200 OK** | `{"success": true, "data": []}`<br>UI displays: *"No employees match your search"* |
 | **6** | **Update Non-Existent Employee** | `PUT /api/employees/EMP999`<br>`{"name":"Valid Name", "department":"HR", "designation":"Lead", "salary":60000, "contact":"9876543210"}` | **404 Not Found** | `{"success": false, "error": "No employee found with ID EMP999."}` |
 | **7** | **Add Milestone to Employee** | `POST /api/employees/EMP003/history`<br>`{"event_date":"19 October", "year":2024, "event_type":"location", "title":"Dubai Hub", "location":"Dubai", "message":"Your Location has been updated"}` | **201 Created** | `{"success": true, "data": {"id": ..., "event_type": "location"}}` |
-
----
-
-## 6. College Mini Project Viva & Technical Talking Points
-
-### Q1: How does the application switch between the Directory and the Employee Profile without page reloads?
-> **Answer**: The application implements client-side Single Page Application (SPA) routing. Using DOM view visibility toggles (`hidden` attribute) and `window.location.hash` (`#profile/EMP001`), the state switches smoothly while fetching detailed records from `GET /api/employees/<emp_id>` asynchronously using the native browser Fetch API.
-
-### Q2: Why is SQLite used with parameterized queries?
-> **Answer**: SQLite eliminates third-party DBMS installation and configuration overhead for mini-projects while providing full ACID compliance. By binding parameters with `?` tuples, the database engine treats input exclusively as literals, completely immunizing against SQL Injection vulnerabilities.
-
-### Q3: How is work and career history tracked?
-> **Answer**: The `career_history` table maintains a one-to-many relationship (`emp_id` foreign key) referencing the `employees` table with `ON DELETE CASCADE`. Each entry records the date, year, event type (`location`, `designation`, `department`, `project`, `milestone`), title, location, and update message.
-
-### Q4: How is Cross-Origin Resource Sharing (CORS) restricted?
-> **Answer**: `flask-cors` is configured to only allow requests originating from `http://localhost:3000` and `http://127.0.0.1:3000`, rejecting arbitrary untrusted origins while allowing legitimate frontend tooling requests.
