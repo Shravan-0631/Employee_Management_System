@@ -1,9 +1,6 @@
 # Employee Management System 
 
 A full-stack, editorial HR internal portal mini-project built with **Python Flask**, **SQLite (sqlite3)**, and **Plain Vanilla HTML5 / CSS3 / JavaScript** (No React / frontend frameworks). Node.js is utilized solely for tooling (`package.json` with a dev server on port 3000).
-
-Now features a **Career & Work History Portal** matching the modern HR workforce profile UI (profile header banner, live work timer, reporting hierarchy, teammate status, and interactive career timeline with milestone updates).
-
 ---
 
 ## 1. Project Overview & Architecture
