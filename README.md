@@ -1,4 +1,4 @@
-# Employee Management System (EMS) & Career History Portal
+# Employee Management System 
 
 A full-stack, editorial HR internal portal mini-project built with **Python Flask**, **SQLite (sqlite3)**, and **Plain Vanilla HTML5 / CSS3 / JavaScript** (No React / frontend frameworks). Node.js is utilized solely for tooling (`package.json` with a dev server on port 3000).
 
