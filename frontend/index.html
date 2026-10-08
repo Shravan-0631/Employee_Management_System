@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>People Register · Employee Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Full-bleed office photo + dark overlay in CSS -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- Application Shell with Side Navigation Rail -->
+    <div class="app-layout">
+      <!-- Left mini icon rail (matches enterprise HR portal) -->
+      <aside class="nav-rail" aria-label="Portal Navigation">
+        <div class="rail-logo" title="Internal HR Portal">
+          <svg viewBox="0 0 24 24" class="rail-icon" fill="currentColor">
+            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+          </svg>
+        </div>
+        <nav class="rail-menu">
+          <button type="button" class="rail-btn active" id="railBtnDirectory" title="Staff Directory & Register">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Staff</span>
+          </button>
+          <button type="button" class="rail-btn" id="railBtnProfile" title="Employee Profile & Work History">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>History</span>
+          </button>
+          <button type="button" class="rail-btn" title="Attendance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Clock</span>
+          </button>
+          <button type="button" class="rail-btn" title="Performance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>Review</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main Workspace -->
+      <main class="page-content">
+        <!-- Top Navbar with Breadcrumbs & Global Quick Actions -->
+        <header class="app-topbar">
+          <div class="topbar-left">
+            <span class="badge-internal">HR Portal</span>
+            <nav class="topbar-nav" aria-label="Breadcrumb">
+              <button type="button" class="topbar-link active" id="navLinkDirectory">Directory</button>
+              <span class="topbar-sep" id="navSep" hidden>/</span>
+              <span class="topbar-current" id="navCurrentProfile" hidden>Employee Profile</span>
+            </nav>
+          </div>
+          <div class="topbar-right">
+            <button type="button" class="btn btn-outline" id="btnBackToDirectory" hidden>
+              <svg viewBox="0 0 24 24" class="btn-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Back to Directory
+            </button>
+            <button type="button" class="btn btn-primary" id="btnAdd">
+              <svg viewBox="0 0 24 24" class="btn-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add employee
+            </button>
+          </div>
+        </header>
+
+        <!-- VIEW 1: DIRECTORY & STATS (Default view) -->
+        <section id="directoryView" class="view-section">
+          <div class="masthead">
+            <div class="wordmark">
+              <p class="eyebrow">Internal HR Directory</p>
+              <h1>People Register</h1>
+              <p class="lede">
+                Complete staff register. Click on any employee row to inspect their
+                work history, milestones, reporting hierarchy, and career timeline.
+              </p>
+            </div>
+
+            <aside class="hero-stats" id="statsStrip" aria-label="Workforce snapshot">
+              <div class="stat">
+                <span class="stat-label">People on file</span>
+                <strong class="stat-value" id="statTotal">—</strong>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Departments</span>
+                <strong class="stat-value" id="statDepts">—</strong>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Average CTC</span>
+                <strong class="stat-value mono" id="statAvg">—</strong>
+              </div>
+            </aside>
+          </div>
+
+          <section class="panel" aria-labelledby="directoryHeading">
+            <div class="panel-bar">
+              <div>
+                <h2 id="directoryHeading">Staff Directory</h2>
+                <p class="panel-subtitle">Select an employee row to open their full Career & Work History portal</p>
+              </div>
+              <div class="panel-bar-actions">
+                <span class="panel-count-badge" id="employeeCountBadge">8 staff on record</span>
+                <button type="button" class="btn btn-primary" id="btnAddInPanel">
+                  <svg viewBox="0 0 24 24" class="btn-icon" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add Employee
+                </button>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-wrap">
+                <span class="visually-hidden">Search by name, ID or department</span>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M16.5 16.5 L21 21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                <input
+                  type="search"
+                  id="searchInput"
+                  placeholder="Search name, EMP ID, or department..."
+                  autocomplete="off"
+                />
+              </label>
+
+              <label class="filter-wrap">
+                <span class="visually-hidden">Filter by department</span>
+                <select id="deptFilter">
+                  <option value="">All departments</option>
+                </select>
+              </label>
+
+              <button type="button" class="btn btn-outline" id="btnResetFilters">Reset</button>
+            </div>
+
+            <!-- Offline / Connection Alert Banner -->
+            <div id="connectionBanner" class="connection-banner hidden">
+              <div class="connection-banner-inner">
+                <span class="banner-icon">ℹ️</span>
+                <span id="connectionBannerText">Backend server offline. Displaying sample employee data. Run <code>python backend/app.py</code> in terminal to enable live database persistence.</span>
+              </div>
+            </div>
+
+            <div id="loadingState" class="state-line hidden">Loading records…</div>
+            <div id="emptyState" class="empty hidden">
+              <p>No employees match your search</p>
+              <p class="empty-hint">Clear the filter or add a new employee record.</p>
+              <div style="margin-top: 14px; display: flex; gap: 10px;">
+                <button type="button" class="btn btn-primary btn-sm" id="btnEmptyAdd">
+                  + Add New Employee
+                </button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnEmptyClear">
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="staff-table" id="staffTable">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>ID</th>
+                    <th>Department</th>
+                    <th>Role</th>
+                    <th>CTC (INR)</th>
+                    <th>Contact</th>
+                    <th><span class="visually-hidden">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="staffBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card-list" id="cardList" hidden></div>
+          </section>
+        </section>
+
+        <!-- VIEW 2: EMPLOYEE PROFILE & CAREER HISTORY (Matches reference HR portal) -->
+        <section id="profileView" class="view-section" hidden>
+          <!-- Modern Profile Hub Container -->
+          <article class="profile-hub">
+            <!-- Full-width artistic header banner -->
+            <div class="profile-banner">
+              <div class="banner-overlay"></div>
+              <div class="banner-actions">
+                <button type="button" class="banner-btn" id="btnEditCurrentEmp" title="Edit Employee Details">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  <span>Edit Profile</span>
+                </button>
+                <button type="button" class="banner-icon-btn" title="More options">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Two-Column Profile Workspace -->
+            <div class="profile-grid">
+              <!-- Left Column: Employee Identity & Work Status -->
+              <aside class="profile-left-col">
+                <div class="profile-card">
+                  <!-- Large overlapping avatar -->
+                  <div class="profile-avatar-wrap">
+                    <div class="profile-avatar-large" id="profAvatar">AS</div>
+                  </div>
+
+                  <div class="profile-headings">
+                    <h2 class="profile-name-id" id="profTitle">EMP001 · Ananya Sharma</h2>
+                    <p class="profile-designation" id="profRole">Lead Systems Architect</p>
+                    <div class="profile-status-pill" id="profStatusBadge">
+                      <span class="status-dot"></span>
+                      <span id="profStatusText">Present</span>
+                    </div>
+                  </div>
+
+                  <!-- Real-time Work Timer Widget (interactive) -->
+                  <div class="work-timer-widget">
+                    <div class="timer-display mono" id="liveTimer">08 : 08 : 17</div>
+                    <div class="timer-actions">
+                      <button type="button" class="btn-checkout" id="btnCheckToggle">Check-out</button>
+                      <button type="button" class="timer-icon-btn" id="btnTimerLap" title="Log timer milestone">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Reporting To Hierarchy Block -->
+                  <div class="profile-section-block">
+                    <span class="block-label">Reporting To</span>
+                    <div class="hierarchy-item" id="profManagerCard">
+                      <div class="mini-avatar" id="profManagerAvatar">VK</div>
+                      <div class="hierarchy-details">
+                        <strong class="hierarchy-name" id="profManagerName">Vikram Singh</strong>
+                        <span class="hierarchy-role" id="profManagerRole">Operations Lead</span>
+                      </div>
+                      <span class="mini-badge-present">Present</span>
+                    </div>
+                  </div>
+
+                  <!-- Reportees / Teammates Block -->
+                  <div class="profile-section-block">
+                    <span class="block-label">Teammates & Reportees</span>
+                    <div class="reportees-list" id="profColleaguesList">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+
+                  <!-- Key Employment Details -->
+                  <div class="profile-section-block">
+                    <span class="block-label">Official Record</span>
+                    <div class="record-meta-list">
+                      <div class="meta-row">
+                        <span class="meta-name">Department:</span>
+                        <strong class="meta-val" id="profDept">Engineering</strong>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-name">Annual CTC:</span>
+                        <strong class="meta-val mono" id="profSalary">₹9,20,000.00</strong>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-name">Mobile:</span>
+                        <strong class="meta-val mono" id="profContact">9876543210</strong>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-name">Employee ID:</span>
+                        <strong class="meta-val mono" id="profId">EMP001</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+
+              <!-- Right Column: Tabs and Career History Timeline -->
+              <section class="profile-right-col">
+                <!-- Navigation Tabs -->
+                <nav class="portal-tab-bar" aria-label="Employee Tabs">
+                  <button type="button" class="portal-tab active" data-tab="career">Career History</button>
+                  <button type="button" class="portal-tab" data-tab="profile">Profile Dossier</button>
+                  <button type="button" class="portal-tab" data-tab="activities">Activities</button>
+                  <button type="button" class="portal-tab" data-tab="leave">Leave &amp; Attendance</button>
+                  <button type="button" class="portal-tab" data-tab="timesheets">Timesheets</button>
+                  <div class="tab-bar-spacer"></div>
+                  <button type="button" class="btn btn-primary btn-sm" id="btnOpenAddHistory">
+                    <svg viewBox="0 0 24 24" class="btn-icon" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Milestone
+                  </button>
+                </nav>
+
+                <!-- TAB PANE: CAREER HISTORY (Matches reference image timeline) -->
+                <div class="tab-content active" id="paneCareer">
+                  <div class="history-timeline-wrap">
+                    <div class="timeline-stream" id="timelineStream">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB PANE: PROFILE DOSSIER -->
+                <div class="tab-content" id="paneProfile" hidden>
+                  <div class="dossier-panel">
+                    <h3>Employee Full Record</h3>
+                    <div class="dossier-grid" id="dossierGrid">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB PANE: ACTIVITIES -->
+                <div class="tab-content" id="paneActivities" hidden>
+                  <div class="dossier-panel">
+                    <h3>Recent System Activities</h3>
+                    <ul class="activity-feed">
+                      <li>
+                        <span class="act-dot"></span>
+                        <div>
+                          <strong>Check-in recorded</strong>
+                          <p class="act-time">Today at 09:14 AM · Main Office Turnstile</p>
+                        </div>
+                      </li>
+                      <li>
+                        <span class="act-dot"></span>
+                        <div>
+                          <strong>Work Milestone Logged</strong>
+                          <p class="act-time">Architecture sprint deliverables completed</p>
+                        </div>
+                      </li>
+                      <li>
+                        <span class="act-dot"></span>
+                        <div>
+                          <strong>Quarterly Performance Feedback</strong>
+                          <p class="act-time">Received review rating: Exceptional (5.0 / 5.0)</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- TAB PANE: LEAVE & ATTENDANCE -->
+                <div class="tab-content" id="paneLeave" hidden>
+                  <div class="dossier-panel">
+                    <h3>Annual Leave Balance (Current Cycle)</h3>
+                    <div class="leave-cards-grid">
+                      <div class="leave-card">
+                        <span class="leave-title">Casual Leave</span>
+                        <strong class="leave-val">08 / 12</strong>
+                        <span class="leave-sub">Available days</span>
+                      </div>
+                      <div class="leave-card">
+                        <span class="leave-title">Sick Leave</span>
+                        <strong class="leave-val">10 / 10</strong>
+                        <span class="leave-sub">Full pay</span>
+                      </div>
+                      <div class="leave-card">
+                        <span class="leave-title">Earned Leave</span>
+                        <strong class="leave-val">15 / 18</strong>
+                        <span class="leave-sub">Accrued</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB PANE: TIMESHEETS -->
+                <div class="tab-content" id="paneTimesheets" hidden>
+                  <div class="dossier-panel">
+                    <h3>Weekly Timesheet Summary (40.5 hrs total)</h3>
+                    <div class="timesheet-bars">
+                      <div class="ts-row"><span>Mon</span><strong>8.5 hrs</strong></div>
+                      <div class="ts-row"><span>Tue</span><strong>8.0 hrs</strong></div>
+                      <div class="ts-row"><span>Wed</span><strong>8.2 hrs</strong></div>
+                      <div class="ts-row"><span>Thu</span><strong>8.0 hrs</strong></div>
+                      <div class="ts-row"><span>Fri</span><strong>7.8 hrs</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </article>
+        </section>
+
+        <footer class="colophon">
+          Employee Management System · Mini Project
+        </footer>
+      </main>
+    </div>
+
+    <!-- MODAL: ADD CAREER / WORK MILESTONE -->
+    <div class="modal-backdrop" id="historyModalBackdrop" hidden>
+      <div class="modal modal-lg" role="dialog" aria-labelledby="histModalTitle" aria-modal="true">
+        <div class="modal-head">
+          <h2 id="histModalTitle">Add Career & Work Milestone</h2>
+          <button type="button" class="icon-btn" id="btnCloseHistModal" aria-label="Close dialog">
+            <svg viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+        </div>
+        <form id="historyForm" novalidate>
+          <div class="form-row-2">
+            <div class="field">
+              <label for="histType">Milestone Type</label>
+              <select id="histType" name="event_type" required>
+                <option value="location">Location Update</option>
+                <option value="designation">Designation / Role Promotion</option>
+                <option value="department">Department Transfer</option>
+                <option value="project" selected>Project Deliverable</option>
+                <option value="milestone">Organization Milestone</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="histYear">Year</label>
+              <input type="number" id="histYear" name="year" min="2000" max="2035" value="2024" required class="mono" />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="field">
+              <label for="histDate">Date String (e.g. 19 December)</label>
+              <input type="text" id="histDate" name="event_date" placeholder="19 December" required />
+            </div>
+            <div class="field">
+              <label for="histLocation">Office Location</label>
+              <input type="text" id="histLocation" name="location" placeholder="Dubai / Bengaluru / California" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="histTitle">Title / Role / Project Heading</label>
+            <input type="text" id="histTitle" name="title" placeholder="HR Head / Core Architecture Overhaul" required />
+          </div>
+
+          <div class="field">
+            <label for="histMessage">Message / Update Summary</label>
+            <textarea id="histMessage" name="message" rows="3" placeholder="Describe the promotion, role transfer, or key deliverable achieved..." required></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="btnCancelHistModal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveHistory">Save Milestone</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Slide-in editor drawer (Add / Edit employee share this form) -->
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-labelledby="drawerTitle">
+      <div class="drawer-head">
+        <h2 id="drawerTitle">Add employee</h2>
+        <button type="button" class="icon-btn" id="btnCloseDrawer" aria-label="Close panel">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </button>
+      </div>
+      <form id="empForm" novalidate>
+        <input type="hidden" id="modeField" value="create" />
+
+        <div class="field">
+          <label for="empId">Employee ID</label>
+          <input id="empId" name="emp_id" class="mono" maxlength="10" placeholder="EMP009" />
+          <p class="field-error" data-error-for="emp_id"></p>
+        </div>
+
+        <div class="field">
+          <label for="empName">Full name</label>
+          <input id="empName" name="name" placeholder="First Last" />
+          <p class="field-error" data-error-for="name"></p>
+        </div>
+
+        <div class="field">
+          <label for="empDept">Department</label>
+          <select id="empDept" name="department"></select>
+          <p class="field-error" data-error-for="department"></p>
+        </div>
+
+        <div class="field">
+          <label for="empRole">Designation</label>
+          <input id="empRole" name="designation" placeholder="Software Engineer" />
+          <p class="field-error" data-error-for="designation"></p>
+        </div>
+
+        <div class="field">
+          <label for="empSalary">Annual CTC (INR)</label>
+          <input id="empSalary" name="salary" class="mono" inputmode="decimal" placeholder="750000.00" />
+          <p class="field-error" data-error-for="salary"></p>
+        </div>
+
+        <div class="field">
+          <label for="empContact">Mobile</label>
+          <input id="empContact" name="contact" class="mono" maxlength="10" placeholder="9876543210" />
+          <p class="field-error" data-error-for="contact"></p>
+        </div>
+
+        <div class="drawer-actions">
+          <button type="button" class="btn btn-ghost" id="btnCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Custom delete confirm modal -->
+    <div class="modal-backdrop" id="confirmBackdrop" hidden>
+      <div class="modal" role="dialog" aria-labelledby="confirmTitle" aria-modal="true">
+        <h2 id="confirmTitle">Remove this record?</h2>
+        <p id="confirmCopy">This cannot be undone from the register.</p>
+        <div class="drawer-actions">
+          <button type="button" class="btn btn-ghost" id="btnConfirmNo">Keep</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmYes">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating toast notifications stack -->
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
